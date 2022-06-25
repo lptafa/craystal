@@ -6,15 +6,15 @@ def parse_obj(filename : String, scene : Scene)
 
   File.read_lines(filename).each do |line|
     if line.starts_with?("v ")
-      values = line.split() 
+      values = line.split
       vertices << Vector3.new(values[1].to_f, values[2].to_f, values[3].to_f)
 
     elsif line.starts_with?("vn ")
-      values = line.split()
+      values = line.split
       normals << Vector3.new(values[1].to_f, values[2].to_f, values[3].to_f)
 
     elsif line.starts_with?("f ")
-      values = line.split().skip(1).map do |item|
+      values = line.split.skip(1).map do |item|
         item.split("/").map { |x| x.to_i32 }
       end
       scene.objects << Triangle.new(

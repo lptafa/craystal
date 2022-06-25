@@ -5,14 +5,14 @@ EPSILON = 1e-6
 
 class Intersection
   property t = Float64::MAX
-  property tri : Triangle | Nil = nil
-  property normal : Vector3 | Nil = nil
+  property tri    : Triangle | Nil = nil
+  property normal : Vector3  | Nil = nil
 end
 
 class Scene
   property objects = [] of Triangle
 
-  def intersect(r : Ray, isect : Intersection)
+  def intersect(r : Ray, isect : Intersection) : Bool
     hit = false
 
     objects.each do |object|
@@ -37,7 +37,7 @@ class Triangle
 
   def initialize(@p0, @p1, @p2, @n0, @n1, @n2, @color) end
 
-  def intersect(r : Ray, isect : Intersection)
+  def intersect(r : Ray, isect : Intersection) : Bool
     edge1 = p1 - p0
     edge2 = p2 - p0
 

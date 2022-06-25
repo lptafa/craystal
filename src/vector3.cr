@@ -23,11 +23,11 @@ struct Vector3
   def *(right : Float64) Vector3.new(x * right, y * right, z * right) end
   def /(right : Float64) Vector3.new(x / right, y / right, z / right) end
 
-  def dot(other : self)
+  def dot(other : self) : Float64
     x * other.x + y * other.y + z * other.z
   end
 
-  def cross(other : self)
+  def cross(other : self) : self
     Vector3.new(
       y * other.z - z * other.y,
       z * other.x - x * other.z,
@@ -35,12 +35,12 @@ struct Vector3
     )
   end
 
-  def normalize()
+  def normalize() : self
     length = Math.sqrt(self.dot(self))
     self / length
   end
 
-  def [](index : Int32)
+  def [](index : Int32) : Float64
     case index
       when 0 then x
       when 1 then y

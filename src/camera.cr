@@ -24,7 +24,7 @@ class Camera
     @corner = origin - horizontal / 2 - vertical / 2 - w
   end
 
-  def get_ray(du : Float64, dv : Float64)
+  def get_ray(du : Float64, dv : Float64) : Ray
     Ray.new(
       origin,
       (corner + horizontal * du + vertical * dv - origin).normalize()

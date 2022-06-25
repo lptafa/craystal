@@ -38,15 +38,15 @@ end
 
 # ------------------------------------ main ------------------------------------
 
-camera_location = Vector3.new(7, 7, 7)
+camera_location = Vector3.new(7)
 camera_direction = -camera_location
 fov = 30
 
 image = Image.new(width, height)
-scene = Scene.new()
+scene = Scene.new
 camera = Camera.new(width, height, camera_location, camera_direction, fov)
 
-parse_obj("amogus.obj", scene)
+parse_obj(model, scene)
 
 rows_done = 0
 
@@ -54,7 +54,7 @@ image.height.times do |y|
   spawn do
     rng = Random.new
     image.width.times do |x|
-      total = Vector3.new()
+      total = Vector3.new
       msaa.times do
         du = (x + rng.rand(1.0)) / image.width
         dv = (y + rng.rand(1.0)) / image.height

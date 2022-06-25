@@ -21,7 +21,7 @@ class Image
     end
   end
 
-  def [](x : Int32, y : Int32)
+  def [](x : Int32, y : Int32) : Vector3
     pixels[x + y * width]
   end
 
