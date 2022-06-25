@@ -38,32 +38,30 @@ end
 image = Image.new(width, height)
 
 scene = Scene.new()
-parse_obj("amogus.obj", scene)
+# parse_obj(model, scene)
 
 camera = Camera.new(
   width,
   height,
   Vector3.new(7, 7, 7),
   Vector3.new(-1, -1, -1),
-  30.0
+  180.0
 )
 
 counter = 0
-j = image.@height - 1
-0.step(to: image.@height - 1) do |j|
+image.@height.times do |y|
   spawn same_thread: false do
     randomizer = Random.new
-    0.step(to: image.@width - 1) do |i|
+    image.@width.times do |x|
+      total = Vector3.new
 
-      total = Vector3.new()
-
-      0.step(to: msaa - 1) do |_|
-        du = (i + randomizer.rand(1.0)) / image.@width
-        dv = (j + randomizer.rand(1.0)) / image.@height
+      msaa.times do
+        du = (x + randomizer.rand(1.0)) / image.@width
+        dv = (y + randomizer.rand(1.0)) / image.@height
         ray = camera.get_ray(du, 1 - dv)
         total = total + render(scene, ray)
       end
-      image.set(i, j, total / msaa)
+      image.set(x, y, total / msaa)
     end
     counter += 1
   end
@@ -71,8 +69,7 @@ end
 
 while counter < image.@height
   sleep 0.1
-  # Fiber.yield
 end
+Fiber.yield
 
 image.save("test.ppm")
-
