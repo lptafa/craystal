@@ -38,7 +38,7 @@ end
 
 # ------------------------------------ main ------------------------------------
 
-camera_location = Vector3.new(7)
+camera_location = Vector3.new(7, 7, 7)
 camera_direction = -camera_location
 fov = 30
 
@@ -47,6 +47,7 @@ scene = Scene.new
 camera = Camera.new(width, height, camera_location, camera_direction, fov)
 
 parse_obj(model, scene)
+scene.objects << Sphere.new(Vector3.new(1, 0, 0), 0.5, Vector3.new(1, 1, 1))
 
 rows_done = 0
 

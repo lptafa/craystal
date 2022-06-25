@@ -5,26 +5,31 @@ EPSILON = 1e-6
 
 class Intersection
   property t = Float64::MAX
-  property tri    : Triangle | Nil = nil
+  property obj    : Obj | Nil = nil
   property normal : Vector3  | Nil = nil
 end
 
+abstract class Obj
+  property color : Vector3
+  def initialize(@color) end
+  abstract def intersect(r : Ray, isect : Intersection)
+end
+
 class Scene
-  property objects = [] of Triangle
+  property objects = [] of Obj
 
   def intersect(r : Ray, isect : Intersection) : Bool
     hit = false
 
     objects.each do |object|
-      if object.intersect(r, isect)
-        hit = true
-      end
+      hit = object.intersect(r, isect) || hit
     end
+
     hit
   end
 end
 
-class Triangle
+class Triangle < Obj
   property p0 : Vector3
   property p1 : Vector3
   property p2 : Vector3
@@ -32,8 +37,6 @@ class Triangle
   property n0 : Vector3
   property n1 : Vector3
   property n2 : Vector3
-
-  property color : Vector3
 
   def initialize(@p0, @p1, @p2, @n0, @n1, @n2, @color) end
 
@@ -68,7 +71,7 @@ class Triangle
     end
 
     isect.t = t
-    isect.tri = self
+    isect.obj = self
 
     u = 1 - v - w
     isect.normal = Vector3.new(
@@ -76,6 +79,39 @@ class Triangle
       n0.y * u + n1.y * v + n2.y * w,
       n0.z * u + n1.z * v + n2.z * w,
     )
+
+    return true
+  end
+end
+
+class Sphere < Obj
+  property pos : Vector3
+  property radius : Float64
+
+  def initialize(@pos, @radius, @color) end
+
+  def intersect(r : Ray, isect : Intersection) : Bool
+    oc = r.origin - pos
+    a = r.direction.dot(r.direction)
+    b = oc.dot(r.direction) * 2
+    c = oc.dot(oc) - radius * radius
+    disc = b * b - 4 * a * c
+    if disc < 0
+      return false
+    end
+
+    t = (-b - Math.sqrt(disc)) / (2 * a)
+    if t < EPSILON
+      t = (-b + Math.sqrt(disc)) / (2 * a)
+    end
+
+    if t < EPSILON || t > isect.t
+      return false
+    end
+
+    isect.t = t
+    isect.obj = self
+    isect.normal = (r.at(t) - pos).normalize()
 
     return true
   end

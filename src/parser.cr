@@ -1,6 +1,6 @@
 require "./object"
 
-def parse_obj(filename : String, scene : Scene)
+def parse_obj(filename : String, scene : Scene, color = Vector3.new(1, 0, 0))
   vertices = [] of Vector3
   normals = [] of Vector3
 
@@ -25,7 +25,8 @@ def parse_obj(filename : String, scene : Scene)
         normals[values[0][2] - 1],
         normals[values[1][2] - 1],
         normals[values[2][2] - 1],
-        Vector3.new(1.0, 0.0, 1.0)
+
+        color
       )
     end
   end
