@@ -1,10 +1,10 @@
 require "./vector3"
 
 class Camera
-  @origin     : Vector3
-  @horizontal : Vector3
-  @vertical   : Vector3
-  @corner     : Vector3
+  property origin     : Vector3
+  property horizontal : Vector3
+  property vertical   : Vector3
+  property corner     : Vector3
 
   def initialize(width : Int32, height : Int32, @origin, direction : Vector3, fov : Float64)
     aspect_ratio = width / height
@@ -21,22 +21,21 @@ class Camera
 
     @horizontal = u * -viewport_width
     @vertical = v * viewport_height
-    @corner = @origin - @horizontal / 2 - @vertical / 2 - w
+    @corner = origin - horizontal / 2 - vertical / 2 - w
   end
 
   def get_ray(du : Float64, dv : Float64)
-    Ray.new(@origin,
-      (@corner + @horizontal * du + @vertical * dv - @origin).normalize())
+    Ray.new(
+      origin,
+      (corner + horizontal * du + vertical * dv - origin).normalize()
+    )
   end
 end
 
 struct Ray
-  @origin : Vector3
-  @direction : Vector3
+  property origin : Vector3
+  property direction : Vector3
 
   def initialize(@origin, @direction) end
-
-  def at(t : Float64)
-    @origin + @direction * t
-  end
+  def at(t : Float64) origin + direction * t end
 end

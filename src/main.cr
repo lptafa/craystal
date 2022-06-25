@@ -29,7 +29,7 @@ end
 def render(scene : Scene, ray : Ray)
   isect = Intersection.new()
   if scene.intersect(ray, isect)
-    return isect.@normal.as(Vector3) * 0.5 + 0.5
+    return isect.normal.as(Vector3) * 0.5 + 0.5
   end
 
   # Arbitrary background colour
@@ -50,24 +50,24 @@ parse_obj("amogus.obj", scene)
 
 rows_done = 0
 
-image.@height.times do |y|
+image.height.times do |y|
   spawn do
     rng = Random.new
-    image.@width.times do |x|
+    image.width.times do |x|
       total = Vector3.new()
       msaa.times do
-        du = (x + rng.rand(1.0)) / image.@width
-        dv = (y + rng.rand(1.0)) / image.@height
+        du = (x + rng.rand(1.0)) / image.width
+        dv = (y + rng.rand(1.0)) / image.height
         ray = camera.get_ray(du, 1 - dv)
         total = total + render(scene, ray)
       end
-      image.set(x, y, total / msaa)
+      image[x, y] = total / msaa
     end
     rows_done += 1
   end
 end
 
-while rows_done < image.@height
+while rows_done < image.height
   Fiber.yield
 end
 Fiber.yield
