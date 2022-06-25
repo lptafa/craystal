@@ -6,11 +6,11 @@ require "./camera"
 require "./object"
 require "./parser"
 
-width  = 512
-height = 512
+width  = 1024
+height = 1024
 model = "amogus.obj"
 output = "test.ppm"
-msaa = 2
+msaa = 1
 
 OptionParser.parse do |parser|
   parser.banner = "Yes, I like me some Crystal"
@@ -55,13 +55,19 @@ image.height.times do |y|
     rng = Random.new
     image.width.times do |x|
       total = Vector3.new
-      msaa.times do
-        du = (x + rng.rand(1.0)) / image.width
-        dv = (y + rng.rand(1.0)) / image.height
-        ray = camera.get_ray(du, 1 - dv)
-        total = total + render(scene, ray)
+      if msaa > 1
+        msaa.times do
+          du = (x + rng.rand(1.0)) / image.width
+          dv = (y + rng.rand(1.0)) / image.height
+          ray = camera.get_ray(du, 1 - dv)
+          total = total + render(scene, ray)
+        end
+        total = total / msaa
+      elsif
+        ray = camera.get_ray(x / image.width, 1 - y / image.height)
+        total = render(scene, ray)
       end
-      image[x, y] = total / msaa
+      image[x, y] = total
     end
     rows_done += 1
   end
