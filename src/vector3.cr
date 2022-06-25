@@ -48,3 +48,10 @@ struct Vector3
     self / length
   end
 end
+
+struct Float64
+  def +(right : Vector3) Vector3.new(self + right.@x, self + right.@y, self + right.@z) end
+  def -(right : Vector3) Vector3.new(self - right.@x, self - right.@y, self - right.@z) end
+  def *(right : Vector3) Vector3.new(self * right.@x, self * right.@y, self * right.@z) end
+  def /(right : Vector3) Vector3.new(self / right.@x, self / right.@y, self / right.@z) end
+end
