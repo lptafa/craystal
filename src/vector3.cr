@@ -85,6 +85,10 @@ struct Vector3
       else raise "Invalid index into Vector3"
     end
   end
+
+  def to_s(io : IO)
+    io << "(%.2f, %.2f, %.2f)" % [x, y, z]
+  end
 end
 
 struct Float64

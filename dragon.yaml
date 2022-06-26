@@ -1,0 +1,13 @@
+# Get model file from: https://skfb.ly/ovEXG, make sure to triangulate
+obj: dragon.obj
+
+camera:
+  position: [300, -300, -300]
+  lookat: [0, 0, 0]
+  fov: 90
+
+bvh: true
+debug: true
+output: dragon.ppm
+resolution: 1024
+msaa: 1
