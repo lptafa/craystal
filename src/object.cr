@@ -1,6 +1,3 @@
-require "./vector3"
-require "./camera"
-
 EPSILON = 1e-6
 
 class Intersection
@@ -11,22 +8,11 @@ end
 
 abstract class Obj
   property color : Vector3
-  def initialize(@color) end
+  property aabb : AABB
+
+  def initialize(@color, @aabb) end
+
   abstract def intersect(r : Ray, isect : Intersection)
-end
-
-class Scene
-  property objects = [] of Obj
-
-  def intersect(r : Ray, isect : Intersection) : Bool
-    hit = false
-
-    objects.each do |object|
-      hit = object.intersect(r, isect) || hit
-    end
-
-    hit
-  end
 end
 
 class Triangle < Obj
@@ -38,7 +24,9 @@ class Triangle < Obj
   property n1 : Vector3
   property n2 : Vector3
 
-  def initialize(@p0, @p1, @p2, @n0, @n1, @n2, @color) end
+  def initialize(@p0, @p1, @p2, @n0, @n1, @n2, @color)
+    @aabb = AABB.new(@p0).merge(@p1).merge(@p2)
+  end
 
   def intersect(r : Ray, isect : Intersection) : Bool
     edge1 = p1 - p0
@@ -88,7 +76,9 @@ class Sphere < Obj
   property pos : Vector3
   property radius : Float64
 
-  def initialize(@pos, @radius, @color) end
+  def initialize(@pos, @radius, @color)
+    @aabb = AABB.new(@pos - @radius, @pos + @radius)
+  end
 
   def intersect(r : Ray, isect : Intersection) : Bool
     oc = r.origin - pos

@@ -40,6 +40,34 @@ struct Vector3
     self / length
   end
 
+  def arg_max() : Int32
+    return 0 if (x > y && x > z)
+    return 1 if (y > x && y > z)
+    return 2
+  end
+
+  def arg_min() : Int32
+    return 0 if (x < y && x < z)
+    return 1 if (y < x && y < z)
+    return 2
+  end
+
+  def cwise_max(other : self) : self
+    Vector3.new(
+      Math.max(x, other.x),
+      Math.max(y, other.y),
+      Math.max(z, other.z)
+    )
+  end
+
+  def cwise_min(other : self) : self
+    Vector3.new(
+      Math.min(x, other.x),
+      Math.min(y, other.y),
+      Math.min(z, other.z)
+    )
+  end
+
   def [](index : Int32) : Float64
     case index
       when 0 then x

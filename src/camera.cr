@@ -1,12 +1,15 @@
 require "./vector3"
 
 class Camera
+  property width  : Int32
+  property height : Int32
+
   property origin     : Vector3
   property horizontal : Vector3
   property vertical   : Vector3
   property corner     : Vector3
 
-  def initialize(width : Int32, height : Int32, @origin, direction : Vector3, fov : Float64)
+  def initialize(@width : Int32, @height : Int32, @origin, direction : Vector3, fov : Float64)
     aspect_ratio = width / height
 
     theta = fov * Math::PI / 180

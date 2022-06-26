@@ -3,14 +3,19 @@ require "option_parser"
 require "./vector3"
 require "./image"
 require "./camera"
+require "./scene"
 require "./object"
+require "./renderer"
 require "./parser"
+require "./aabb"
+require "./bvh"
 
 width  = 1024
 height = 1024
 model = "amogus.obj"
 output = "test.ppm"
 msaa = 1
+bvh_enabled = true
 
 OptionParser.parse do |parser|
   parser.banner = "Yes, I like me some Crystal"
@@ -24,60 +29,36 @@ OptionParser.parse do |parser|
   parser.on("-i INPUT", "--input INPUT", "Obj file to render"){ |input| model = input }
   parser.on("-o OUTPUT", "--outut OUTPUT", "Output file name"){ |input| output = input }
   parser.on("-a SAMPLES", "--msaa SAMPLES", "Multi sample count"){ |input| msaa = input.to_i32 }
+  parser.on("-n", "--no-bvh", "Disable bounding volume hierarchy optimizations"){ |_| bvh_enabled = false }
 end
 
-def render(scene : Scene, ray : Ray)
-  isect = Intersection.new()
-  if scene.intersect(ray, isect)
-    return isect.normal.as(Vector3) * 0.5 + 0.5
-  end
 
-  # Arbitrary background colour
-  Vector3.new(0.5, 0.7, 1.0)
-end
-
+# renderer = AORenderer.new
+renderer = DebugRenderer.new
 # ------------------------------------ main ------------------------------------
 
-camera_location = Vector3.new(7, 7, 7)
+camera_location = Vector3.new(300, -300, -300)
 camera_direction = -camera_location
-fov = 30
+fov = 90
 
-image = Image.new(width, height)
 scene = Scene.new
+scene.msaa = msaa
+
 camera = Camera.new(width, height, camera_location, camera_direction, fov)
 
 parse_obj(model, scene)
+
 scene.objects << Sphere.new(Vector3.new(1, 0, 0), 0.5, Vector3.new(1, 1, 1))
 
-rows_done = 0
-
-image.height.times do |y|
-  spawn do
-    rng = Random.new
-    image.width.times do |x|
-      total = Vector3.new
-      if msaa > 1
-        msaa.times do
-          du = (x + rng.rand(1.0)) / image.width
-          dv = (y + rng.rand(1.0)) / image.height
-          ray = camera.get_ray(du, 1 - dv)
-          total = total + render(scene, ray)
-        end
-        total = total / msaa
-      elsif
-        ray = camera.get_ray(x / image.width, 1 - y / image.height)
-        total = render(scene, ray)
-      end
-      image[x, y] = total
-    end
-    rows_done += 1
-  end
+if bvh_enabled
+  bvh = BVH.create(scene.objects)
+  scene.objects = [bvh]
 end
 
-while rows_done < image.height
-  Fiber.yield
-end
-Fiber.yield
+time = Time.utc
+
+image = renderer.render_image(scene, camera)
 
 image.save(output)
 
+puts "Rendering took #{Time.utc - time}"
