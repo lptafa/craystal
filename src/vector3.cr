@@ -4,7 +4,7 @@ struct Vector3
   property z : Float64 = 0.0
 
   def initialize(@x : Float64, @y : Float64, @z : Float64) end
-  def initialize(val : Float64) x = y = z = val end
+  def initialize(val : Float64) @x = @y = @z = val end
   def initialize() end
 
   def r() @x end
@@ -92,4 +92,19 @@ struct Float64
   def -(right : Vector3) Vector3.new(self - right.x, self - right.y, self - right.z) end
   def *(right : Vector3) Vector3.new(self * right.x, self * right.y, self * right.z) end
   def /(right : Vector3) Vector3.new(self / right.x, self / right.y, self / right.z) end
+end
+
+module Random
+  def self.in_hemisphere(normal : Vector3) : Vector3
+    u = Random.rand(1.0) * 2 - 1
+    theta = Random.rand(1.0) * 2 * Math::PI
+    r = Math.sqrt(1 - u * u)
+
+    random_ray = Vector3.new(
+      r * Math.cos(theta),
+      r * Math.sin(theta),
+      u)
+
+    return (normal + random_ray).normalize
+  end
 end

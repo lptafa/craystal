@@ -16,6 +16,7 @@ model = "amogus.obj"
 output = "test.ppm"
 msaa = 1
 bvh_enabled = true
+debug_enabled = false
 
 OptionParser.parse do |parser|
   parser.banner = "Yes, I like me some Crystal"
@@ -30,11 +31,14 @@ OptionParser.parse do |parser|
   parser.on("-o OUTPUT", "--outut OUTPUT", "Output file name"){ |input| output = input }
   parser.on("-a SAMPLES", "--msaa SAMPLES", "Multi sample count"){ |input| msaa = input.to_i32 }
   parser.on("-n", "--no-bvh", "Disable bounding volume hierarchy optimizations"){ |_| bvh_enabled = false }
+  parser.on("-d", "--debug", "Render using the debug renderer"){ |_| debug_enabled = false }
 end
 
 
-# renderer = AORenderer.new
-renderer = DebugRenderer.new
+renderer = AORenderer.new
+if debug_enabled
+  renderer = DebugRenderer.new
+end
 # ------------------------------------ main ------------------------------------
 
 camera_location = Vector3.new(300, -300, -300)
@@ -46,9 +50,7 @@ scene.msaa = msaa
 
 camera = Camera.new(width, height, camera_location, camera_direction, fov)
 
-parse_obj(model, scene)
-
-scene.objects << Sphere.new(Vector3.new(1, 0, 0), 0.5, Vector3.new(1, 1, 1))
+parse_obj(model, scene, Vector3.new(1))
 
 if bvh_enabled
   bvh = BVH.create(scene.objects)

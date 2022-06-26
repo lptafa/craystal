@@ -52,25 +52,13 @@ class AORenderer < Renderer
       return Vector3.new(0)
     end
 
-    new_ray = Ray.new(ray.at(isect.t), random_in_hemisphere(isect.normal.as Vector3))
+    new_ray = Ray.new(ray.at(isect.t), Random.in_hemisphere(isect.normal.as Vector3))
 
     unless scene.intersect(new_ray, Intersection.new())
-      return Vector3.new(1)
+      return isect.obj.as (Obj).color
     end
 
     Vector3.new(0)
   end
 
-  def random_in_hemisphere(normal : Vector3) : Vector3
-    u = Random.rand(1.0) * 2 - 1
-    theta = Random.rand(1.0) * 2 * Math::PI
-    r = Math.sqrt(1 - u * u)
-
-    random_ray = Vector3.new(
-      r * Math.cos(theta),
-      r * Math.sin(theta),
-      u)
-
-    return (normal + random_ray).normalize
-  end
 end
