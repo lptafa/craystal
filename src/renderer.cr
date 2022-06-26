@@ -16,7 +16,8 @@ abstract class Renderer
               total = total + render_ray(scene, ray)
             end
             total = total / scene.msaa
-          elsif ray = camera.get_ray(x / image.width, 1 - y / image.height)
+          else
+            ray = camera.get_ray(x / image.width, 1 - y / image.height)
             total = render_ray(scene, ray)
           end
           image[x, y] = total

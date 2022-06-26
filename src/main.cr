@@ -21,16 +21,21 @@ debug_enabled = false
 OptionParser.parse do |parser|
   parser.banner = "Yes, I like me some Crystal"
 
+  parser.on("-h", "--help", "Show this help message") do
+    puts parser
+    exit(0)
+  end
+
   parser.on("-w WIDTH", "--width WIDTH", "Width"){ |w| width = w.to_i32 }
   parser.on("-h HEIGHT", "--height HEIGHT", "Height"){ |h| height = h.to_i32 }
-  parser.on("-r RESOLUTION", "--resolution RESOLUTION", "Square res") do |r|
+  parser.on("-r RES", "--resolution RES", "Square res") do |r|
     height = r.to_i32
     width  = r.to_i32
   end
   parser.on("-i INPUT", "--input INPUT", "Obj file to render"){ |input| model = input }
   parser.on("-o OUTPUT", "--outut OUTPUT", "Output file name"){ |input| output = input }
   parser.on("-a SAMPLES", "--msaa SAMPLES", "Multi sample count"){ |input| msaa = input.to_i32 }
-  parser.on("-n", "--no-bvh", "Disable bounding volume hierarchy optimizations"){ |_| bvh_enabled = false }
+  parser.on("-n", "--no-bvh", "Disable bounding volume hierarchy"){ |_| bvh_enabled = false }
   parser.on("-d", "--debug", "Render using the debug renderer"){ |_| debug_enabled = false }
 end
 
