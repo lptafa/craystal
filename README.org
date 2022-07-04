@@ -3,4 +3,4 @@
 This is a raytracer written to learn crystal
 
 
-[[./dragon1.png]]
+[[./dragon.png]]

@@ -2,9 +2,9 @@
 obj: dragon.obj
 
 camera:
-  position: [300, -300, -300]
-  lookat: [0, 0, 0]
-  fov: 90
+  position: [800, -300, -450]
+  direction: [-1, 0.3, 0.3]
+  fov: 60
 
 bvh: true
 debug: true
